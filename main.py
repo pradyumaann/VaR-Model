@@ -27,4 +27,23 @@ log_returns = log_returns.dropna()
 #create an equally weighted portfolio
 portfolio_value = 1000000
 weights = np.array([1/len(tickers)]*len(tickers))
-print(weights)
+
+#calculate the historical portfolio returns
+historical_returns = (log_returns * weights).sum(axis = 1)
+days = 5
+historical_x_day_returns = historical_returns.rolling(window=days).sum()
+
+#create a covariance matrix for all securities
+cov_matrix = log_returns.cov() * 252
+
+#calculate the standard deviation of portfolio
+portfolio_std_dev = np.sqrt(weights.T @ cov_matrix @ weights)
+
+#set different confidence levels to calculate and visualize 
+confidence_levels = [0.9, 0.95, 0.99]
+Vars = []
+
+for cl in confidence_levels:
+    Var = portfolio_value * portfolio_std_dev * norm.ppf(cl) *np.sqrt(days/252)
+    Vars.append(Var)
+    

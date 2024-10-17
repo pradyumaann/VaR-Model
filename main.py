@@ -30,7 +30,7 @@ weights = np.array([1/len(tickers)]*len(tickers))
 
 #calculate the historical portfolio returns
 historical_returns = (log_returns * weights).sum(axis = 1)
-days = 5
+days = 20
 historical_x_day_returns = historical_returns.rolling(window=days).sum()
 
 #create a covariance matrix for all securities
@@ -54,3 +54,19 @@ print('-'*40)
 
 for cl, VaR in zip(confidence_levels, VaRs):
     print(f'{cl * 100:>6.0f}%: {"":<8} ${VaR:>10,.2f}')
+
+#convert returns to dollar values for the histogram
+historical_x_days_returns_dollar = historical_x_day_returns * portfolio_value
+#plot the histogram
+plt.hist(historical_x_days_returns_dollar, bins = 50, density=True, alpha = 0.5, label=f'{days}-Day Returns')
+
+#add vertical lines representing VaR at each confidence level
+colors = ['g','b','r']
+for cl, VaR, c in zip(confidence_levels, VaRs, colors):
+    plt.axvline(x=VaR, linestyle='--', color=c, label='VaR at {}%Confidence'.format(int(cl*100)))
+    
+plt.xlabel(f'{days}-Day Portfolio Return ($)')
+plt.ylabel('Frequency')
+plt.title(f'Distribution of Portfolio {days}-Day Returns and Parametric VaR Estimates')
+plt.legend()
+plt.show()

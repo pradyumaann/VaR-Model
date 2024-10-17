@@ -19,5 +19,12 @@ for ticker in tickers:
     data = yf.download(ticker, start = startDate, end = endDate)
     adj_close_df[ticker] = data['Adj Close']
 
-print(adj_close_df)
 
+#calculate daily log returns and drop any NAs
+log_returns = np.log(adj_close_df/adj_close_df.shift(1))
+log_returns = log_returns.dropna()
+
+#create an equally weighted portfolio
+portfolio_value = 1000000
+weights = np.array([1/len(tickers)]*len(tickers))
+print(weights)

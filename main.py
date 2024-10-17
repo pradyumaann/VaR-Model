@@ -41,9 +41,16 @@ portfolio_std_dev = np.sqrt(weights.T @ cov_matrix @ weights)
 
 #set different confidence levels to calculate and visualize 
 confidence_levels = [0.9, 0.95, 0.99]
-Vars = []
+VaRs = []
 
 for cl in confidence_levels:
-    Var = portfolio_value * portfolio_std_dev * norm.ppf(cl) *np.sqrt(days/252)
-    Vars.append(Var)
-    
+    z_score = norm.ppf(cl)
+    VaR = portfolio_value * portfolio_std_dev * z_score *np.sqrt(days/252)
+    VaRs.append(VaR)
+
+#print out Var results
+print(f'{"Confidence Level":<20}{"Value at Risk":<20}')
+print('-'*40)
+
+for cl, VaR in zip(confidence_levels, VaRs):
+    print(f'{cl * 100:>6.0f}%: {"":<8} ${VaR:>10,.2f}')

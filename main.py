@@ -44,7 +44,7 @@ confidence_levels = [0.9, 0.95, 0.99]
 VaRs = []
 
 for cl in confidence_levels:
-    z_score = norm.ppf(cl)
+    z_score = norm.ppf(1-cl)
     VaR = portfolio_value * portfolio_std_dev * z_score *np.sqrt(days/252)
     VaRs.append(VaR)
 
